@@ -32,10 +32,13 @@ books =
       .force
 
 total_ratings = books.map(&:average_rating).inject(:+)
-point = rand * total_ratings
 
-selected = books.drop_while do |b|
-  (point -= b.average_rating) > 0
-end.first
+loop do
+  point = rand * total_ratings
+  selected = books.drop_while do |b|
+    (point -= b.average_rating) > 0
+  end.first
 
-pp selected
+  pp selected
+  break if STDIN.gets.strip.downcase == 'q'
+end
