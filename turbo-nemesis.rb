@@ -10,9 +10,12 @@ USER_ID = ARGV[0].to_i
 
 gr = Goodreads.new api_key: API_KEY
 
+$stderr.print "Fetching data"
+
 shelf_pages = (1..Float::INFINITY).lazy.map do |p|
-  gr.shelf USER_ID, 'to-read', page: p
+  gr.shelf(USER_ID, 'to-read', page: p).tap { $stderr.print '.' }
 end
+
 
 DEFAULT_RATING = 5.01 # for unrated books
 
@@ -30,6 +33,8 @@ books =
       .map(&:book) \
       .map(&method(:mangle_book)) \
       .force
+
+$stderr.puts ' done.'
 
 total_ratings = books.map(&:average_rating).inject(:+)
 
